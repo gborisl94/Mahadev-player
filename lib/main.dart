@@ -1,73 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-void main() => runApp(const MahadevApp());
+void main() => runApp(MahadevApp());
 
 class MahadevApp extends StatelessWidget {
-  const MahadevApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark(),
-      home: const WebViewScreen(),
+      home: WebViewScreen(),
     );
   }
 }
 
 class WebViewScreen extends StatefulWidget {
-  const WebViewScreen({super.key});
-
   @override
-  State<WebViewScreen> createState() => _WebViewScreenState();
+  _WebViewScreenState createState() => _WebViewScreenState();
 }
 
 class _WebViewScreenState extends State<WebViewScreen> {
   late final WebViewController controller;
-  bool _isLoading = true;
+  bool loading = true;
 
   @override
   void initState() {
     super.initState();
     controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(Colors.black)
+      ..enableZoom(false)
       ..setNavigationDelegate(
         NavigationDelegate(
-          onPageStarted: (_) => setState(() => _isLoading = true),
-          onPageFinished: (_) => setState(() => _isLoading = false),
+          onPageStarted: (_) => setState(() => loading = true),
+          onPageFinished: (_) => setState(() => loading = false),
         ),
       )
       ..loadRequest(Uri.parse('https://mahadevbook.com'));
   }
 
-  Future<bool> _handleBack() async {
-    if (await controller.canGoBack()) {
-      controller.goBack();
-      return false;
-    }
-    return true;
-  }
-
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      onPopInvoked: (didPop) async {
-        if (didPop) return;
-        final bool shouldPop = await _handleBack();
-        if (shouldPop && context.mounted) {
-          Navigator.of(context).maybePop();
-        }
-      },
-      child: Scaffold(
-        appBar: AppBar(title: const Text('Mahadev Player')),
-        body: Stack(
-          children: [
-            WebViewWidget(controller: controller),
-            if (_isLoading) const Center(child: CircularProgressIndicator()),
-          ],
-        ),
+    return Scaffold(
+      appBar: AppBar(title: Text('Mahadev Player'), backgroundColor: Colors.black),
+      body: Stack(
+        children: [
+          WebViewWidget(controller: controller),
+          if (loading) Center(child: CircularProgressIndicator()),
+        ],
       ),
     );
   }
