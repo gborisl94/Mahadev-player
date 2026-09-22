@@ -10,17 +10,13 @@ workflows:
           if [ ! -f "android/app/build.gradle" ]; then
             flutter create . --platforms=android --project-name mahadev_player --org com.mahadev
           fi
-      - name: FORCE Add Internet Permission
+      - name: FORCE Add Internet
         script: |
           FILE="android/app/src/main/AndroidManifest.xml"
-          echo "--- BEFORE ---"
-          cat $FILE
-          # On ajoute la permission si elle n'existe pas
-          if ! grep -q "INTERNET" $FILE; then
-            sed -i '/<manifest/a \    <uses-permission android:name="android.permission.INTERNET" />' $FILE
-            sed -i '/<manifest/a \    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />' $FILE
-          fi
-          echo "--- AFTER ---"
+          sed -i '' '/<application/i \
+          \    <uses-permission android:name="android.permission.INTERNET" />\
+          \    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />\
+          ' $FILE || sed -i '/<application/i \    <uses-permission android:name="android.permission.INTERNET" />' $FILE
           cat $FILE
       - name: Get packages
         script: flutter pub get
