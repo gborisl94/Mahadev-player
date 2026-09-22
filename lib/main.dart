@@ -42,7 +42,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
           },
         ),
       )
-      ..loadRequest(Uri.parse('https://mahadevbook.com/'));
+      ..loadRequest(Uri.parse('https://mahadevbook.game/'));
   }
 
   @override
