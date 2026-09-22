@@ -5,15 +5,14 @@ workflows:
     environment:
       flutter: stable
     scripts:
-      - name: Fix missing android folder
+      - name: Create android folder if missing
         script: |
           if [ ! -f "android/app/build.gradle" ]; then
             flutter create . --platforms=android --project-name mahadev_player --org com.mahadev
           fi
-      - name: Add Internet permission
+      - name: Add Internet Permission
         script: |
-          sed -i '' 's/<application/<uses-permission android:name="android.permission.INTERNET" \/>\n    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" \/>\n    <application/' android/app/src/main/AndroidManifest.xml || 
-          sed -i 's/<application/<uses-permission android:name="android.permission.INTERNET" \/>\n    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" \/>\n    <application/' android/app/src/main/AndroidManifest.xml
+          sed -i 's/<application/<uses-permission android:name="android.permission.INTERNET" \/>\n    <application/' android/app/src/main/AndroidManifest.xml || true
       - name: Get packages
         script: flutter pub get
       - name: Build APK
